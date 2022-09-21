@@ -2,8 +2,9 @@ import os
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import torchvision
 from torchvision import transforms
+from torch.utils.data import DataLoader
+from torchvision.datasets import MNIST
 from torchvision.utils import save_image
 
 # Device configuration
@@ -11,8 +12,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Create a directory if not exists
 data_dir = 'data'
-if not os.path.exists(data_dir):
-    os.makedirs(data_dir)
+os.makedirs(data_dir, exist_ok=True)
 
 # Hyper-parameters
 image_size = 784
@@ -22,16 +22,17 @@ num_epochs = 15
 batch_size = 128
 learning_rate = 1e-3
 
-# MNIST dataset
-dataset = torchvision.datasets.MNIST(root='../data',
-                                     train=True,
-                                     transform=transforms.ToTensor(),
-                                     download=True)
+transform = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Normalize([0.5], [0.5])
+])
 
 # Data loader
-data_loader = torch.utils.data.DataLoader(dataset=dataset,
-                                          batch_size=batch_size,
-                                          shuffle=True)
+data_loader = DataLoader(
+    MNIST('../../../data', transform=transform),
+    batch_size=batch_size,
+    shuffle=True
+)
 
 
 # VAE model
