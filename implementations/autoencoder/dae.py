@@ -55,7 +55,7 @@ class Autoencoder(nn.Module):
             nn.Linear(64, 128),
             nn.ReLU(),
             nn.Linear(128, 28*28),
-            nn.Tanh(),
+            nn.Sigmoid(),
         )
 
     def forward(self, x):
